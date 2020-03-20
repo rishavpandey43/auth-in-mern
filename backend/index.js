@@ -1,17 +1,42 @@
 const express = require("express");
-const errorhandler = require("errorhandler");
+const mongoose = require("mongoose");
+const createError = require("http-errors");
+const logger = require("morgan");
 const dotenv = require("dotenv");
 
+const userRouter1 = require("./routes/user.router.v1");
+
+// configure dotenv to access environment variable
 dotenv.config();
 
 const app = express();
 
 const PORT = process.env.PORT || 5000;
 
+// connect server to mongoDB Atlas
+const URI = process.env.ATLAS_DB_URI;
+mongoose.connect(URI, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useUnifiedTopology: true
+});
+
+const connection = mongoose.connection;
+connection.once("open", () => {
+  console.log("Mongoose database connection established successfully");
+});
+
+connection.on("error", function(err) {
+  console.log("Mongoose default connection error: " + err);
+});
+
+// use several middleware
+app.use(logger("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 app.get("/", (req, res) => res.send("Hello World!"));
 
-app.use(errorhandler());
-
-// app.use((err, req, res, next) => {});
+app.use("/api/user/v1", userRouter1);
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}!`));
