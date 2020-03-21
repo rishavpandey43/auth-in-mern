@@ -2,15 +2,41 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import "./login.css";
+
+import Loading from "../Loading/Loading";
+
 const Login = props => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [state, setState] = useState({
+    userDetail: {
+      email: "",
+      password: ""
+    }
+  });
+
+  const handleInputChange = e => {
+    const value = e.target.value;
+    let tempTarget = state.userDetail;
+    tempTarget[e.target.name] = value;
+    setState({ ...state, userDetail: tempTarget });
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
-    const credential = { email, password };
-    props.login(credential);
+    const userDetail = { ...state.userDetail };
+    props.loginFetch(userDetail);
   };
+
+  const isLoading =
+    props.basicAuthDetail.isLoading ||
+    props.cookieAuthDetail.isLoading ||
+    props.sessionAuthDetail.isLoading ||
+    props.tokenAuthDetail.isLoading;
+
+  const errMessage =
+    props.basicAuthDetail.errMessage ||
+    props.cookieAuthDetail.errMessage ||
+    props.sessionAuthDetail.errMessage ||
+    props.tokenAuthDetail.errMessage;
 
   return (
     <div className="login-signup-wrapper">
@@ -30,8 +56,9 @@ const Login = props => {
                       className="form-control"
                       placeholder="johndoe@demo.com"
                       required
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
+                      name="email"
+                      value={state.userDetail.email}
+                      onChange={handleInputChange}
                     />
                   </div>
                   <div className="form-group">
@@ -40,8 +67,9 @@ const Login = props => {
                       type="password"
                       className="form-control"
                       required
-                      value={password}
-                      onChange={e => setPassword(e.target.value)}
+                      name="password"
+                      value={state.userDetail.password}
+                      onChange={handleInputChange}
                     />
                   </div>
                   <div className="form-group form-check">
@@ -59,6 +87,14 @@ const Login = props => {
                   <button type="submit" className="btn btn-primary">
                     Login
                   </button>
+                  <Loading isTrue={isLoading} />
+                  <div>
+                    {errMessage ? (
+                      <span className="text-danger">{errMessage}</span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 </form>
               </div>
             </div>

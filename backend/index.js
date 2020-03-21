@@ -39,16 +39,13 @@ app.get("/", (req, res) => res.send("Hello World!"));
 
 app.use("/api/v1/users", userRouter1);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
-
 // error handler
 app.use((err, req, res, next) => {
-  res.statusCode = err.code || 500;
+  res.statusCode = err.status || 500;
   res.setHeader("Content-Type", "application/json");
-  res.json(err);
+  if (err.message) {
+    res.json({ message: err.message });
+  } else res.json(err);
 });
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}!`));

@@ -3,7 +3,6 @@ import * as ActionTypes from "../actions/actionTypes";
 const initialState = {
   isLoading: false,
   isAuthenticated: false,
-  user: null,
   errMessage: null
 };
 
@@ -14,21 +13,21 @@ const basicAuthDetail = (state = initialState, action) => {
         ...state,
         isLoading: true,
         isAuthenticated: false,
-        user: action.credentials
+        errMessage: null
       };
     case ActionTypes.LOGIN_SUCCESS:
       return {
         ...state,
         isLoading: false,
         isAuthenticated: true,
-        errMessage: ""
+        errMessage: null
       };
     case ActionTypes.LOGIN_FAILURE:
       return {
         ...state,
         isLoading: false,
         isAuthenticated: false,
-        errMessage: action.message
+        errMessage: action.errMessage
       };
     default:
       return state;
