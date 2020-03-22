@@ -43,9 +43,12 @@ app.use("/api/v1/users", userRouter1);
 app.use((err, req, res, next) => {
   res.statusCode = err.status || 500;
   res.setHeader("Content-Type", "application/json");
-  if (err.message) {
-    res.json({ message: err.message });
-  } else res.json(err);
+  console.log(err);
+  res.json(
+    err.message && err.status
+      ? { message: err.message }
+      : { message: "Internal Server Error" }
+  );
 });
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}!`));

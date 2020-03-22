@@ -2,28 +2,30 @@ import axios from "axios";
 
 import * as ActionTypes from "./actionTypes";
 
-export const loginRequest = () => {
+export const loginRequest1 = () => {
   return {
-    type: ActionTypes.LOGIN_REQUEST
+    type: ActionTypes.LOGIN_REQUEST1
   };
 };
 
-export const loginSuccess = () => {
+export const loginSuccess1 = response => {
   return {
-    type: ActionTypes.LOGIN_SUCCESS
+    type: ActionTypes.LOGIN_SUCCESS1,
+    user: response.user,
+    successMessage: response.message
   };
 };
 
-export const loginFailure = response => {
+export const loginFailure1 = response => {
   return {
-    type: ActionTypes.LOGIN_FAILURE,
+    type: ActionTypes.LOGIN_FAILURE1,
     errMessage: response
   };
 };
 
-export const loginFetch = credentials => dispatch => {
+export const loginFetch1 = credentials => dispatch => {
   // dispatch the action
-  dispatch(loginRequest());
+  dispatch(loginRequest1());
 
   // establish connection with server
   axios
@@ -35,27 +37,25 @@ export const loginFetch = credentials => dispatch => {
       }
     )
     .then(res => {
-      dispatch(loginSuccess());
+      dispatch(loginSuccess1(res.data));
     })
     .catch(err => {
-      dispatch(loginFailure(err.response.data.message));
+      err.response
+        ? dispatch(loginFailure1(err.response.data.message))
+        : dispatch(
+            loginFailure1(
+              "Network Error, Connection to server couldn't be established. Please try again."
+            )
+          );
     });
 };
 
-export const logoutRequest = () => {
+export const logoutSuccess1 = () => {
   return {
-    type: ActionTypes.LOGOUT_REQUEST
+    type: ActionTypes.LOGOUT_SUCCESS1
   };
 };
 
-export const logoutSuccess = () => {
-  return {
-    type: ActionTypes.LOGOUT_SUCCESS
-  };
-};
-
-export const logoutFailure = () => {
-  return {
-    type: ActionTypes.LOGOUT_FAILURE
-  };
+export const logoutFetch1 = () => dispatch => {
+  dispatch(logoutSuccess1());
 };

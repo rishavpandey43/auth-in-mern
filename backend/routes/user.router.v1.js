@@ -18,6 +18,16 @@ userRouterV1.options("*", cors.corsWithOptions, res => {
 
 userRouterV1
   .post("/signup", cors.corsWithOptions, (req, res, next) => {
+    User1.findOne({ username: req.body.username })
+      .then(user => {
+        if (user) {
+          let err = new Error();
+          err.status = 403;
+          err.message = `username ${req.body.username} is not available, please try again with another username`;
+          next(err);
+        }
+      })
+      .catch(err => next(err));
     User1.findOne({ email: req.body.email }).then(user => {
       if (user) {
         let err = new Error();
@@ -32,6 +42,7 @@ userRouterV1
               .hash(req.body.password, salt)
               .then(hashPassword => {
                 User1.create({
+                  username: req.body.username,
                   email: req.body.email,
                   firstName: req.body.firstName,
                   lastName: req.body.lastName,
@@ -76,6 +87,12 @@ userRouterV1
                 res.statusCode = 200;
                 res.setHeader("WWW-Authenticate", "Basic");
                 res.json({
+                  user: {
+                    username: user.username,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email
+                  },
                   message: "You're logged in Successfully"
                 });
 
@@ -89,7 +106,9 @@ userRouterV1
                 });
               }
             })
-            .catch(err => next(err));
+            .catch(err => {
+              return next(err);
+            });
         }
       })
       .catch(err => next(err));
