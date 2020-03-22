@@ -12,6 +12,7 @@ import HomePage from "./components/Homepage/Homepage";
 import Signup from "./components/Signup/Signup";
 import Login from "./components/Login/Login";
 import Profile from "./components/Profile/Profile";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 
 export default function MainApp(props) {
   return (
@@ -22,9 +23,11 @@ export default function MainApp(props) {
           <Route exact path="/" component={() => <HomePage {...props} />} />
           <Route path="/signup" component={() => <Signup {...props} />} />
           <Route path="/login" component={() => <Login {...props} />} />
-          <Route
+          <PrivateRoute
+            exact
             path="/profile/:name"
-            component={() => <Profile {...props} />}
+            component={Profile}
+            {...props}
           />
           <Redirect to="/" />
         </Switch>

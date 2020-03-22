@@ -17,13 +17,22 @@ userRouterV1.options("*", cors.corsWithOptions, res => {
 });
 
 userRouterV1
-  .post("/signup", (req, res, next) => {
+  .post("/signup", cors.corsWithOptions, (req, res, next) => {
+    User1.findOne({ username: req.body.username })
+      .then(user => {
+        if (user) {
+          let err = new Error();
+          err.status = 403;
+          err.message = `username ${req.body.username} is not available, please try again with another username`;
+          next(err);
+        }
+      })
+      .catch(err => next(err));
     User1.findOne({ email: req.body.email }).then(user => {
       if (user) {
         let err = new Error();
-        err.code = 403;
-        err.status = "Registration failed";
-        err.message = `Email ${req.body.email} already registered, please try again with another email`;
+        err.status = 403;
+        err.message = `Email ${req.body.email} is already registered, please try again with another email`;
         next(err);
       } else {
         bcrypt
@@ -33,6 +42,7 @@ userRouterV1
               .hash(req.body.password, salt)
               .then(hashPassword => {
                 User1.create({
+                  username: req.body.username,
                   email: req.body.email,
                   firstName: req.body.firstName,
                   lastName: req.body.lastName,
@@ -43,7 +53,7 @@ userRouterV1
                       res.statusCode = 200;
                       res.setHeader("WWW-Authenticate", "Basic");
                       res.json({
-                        status: "Registration Successful",
+                        message: `${user.email} has been successfully registered`,
                         user: {
                           email: user.email,
                           firstName: user.firstName,
@@ -61,14 +71,13 @@ userRouterV1
       }
     });
   })
-  .post("/login", (req, res, next) => {
+  .post("/login", cors.corsWithOptions, (req, res, next) => {
     User1.findOne({ email: req.body.email })
       .then(user => {
         if (!user) {
           let err = new Error();
-          err.code = 404;
-          err.status = "Not registered";
-          err.message = `Email ${req.body.email} is registered, please signup with this email to continue`;
+          err.status = 404;
+          err.message = `Email ${req.body.email} is not registered, please signup with this email to continue`;
           next(err);
         } else {
           bcrypt
@@ -78,8 +87,13 @@ userRouterV1
                 res.statusCode = 200;
                 res.setHeader("WWW-Authenticate", "Basic");
                 res.json({
-                  status: "Authorized",
-                  message: "You're logged in Successful"
+                  user: {
+                    username: user.username,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email
+                  },
+                  message: "You're logged in Successfully"
                 });
 
                 // TODO: Can use token, session, cookies so that browser remembers the login of user
@@ -87,13 +101,14 @@ userRouterV1
                 res.statusCode = 401;
                 res.setHeader("WWW-Authenticate", "Basic");
                 res.json({
-                  status: "Unauthorized",
                   message:
                     "Password entered was incorrect, please try with correct password"
                 });
               }
             })
-            .catch(err => next(err));
+            .catch(err => {
+              return next(err);
+            });
         }
       })
       .catch(err => next(err));

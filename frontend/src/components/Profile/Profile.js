@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import "./profile.css";
 
-const Profile = () => {
+const Profile = props => {
+  useEffect(() => {
+    if (!props.basicAuthDetail.isAuthenticated) {
+      props.history.push("/");
+    }
+  }, [props.basicAuthDetail.isAuthenticated]);
   return (
     <div className="profile-wrapper">
       <div className="container">
@@ -25,7 +30,11 @@ const Profile = () => {
                         />
                       </div>
                       <div className="user-name">
-                        <h3>John Doe</h3>
+                        <h3>
+                          {props.basicAuthDetail.user.firstName +
+                            " " +
+                            props.basicAuthDetail.user.lastName}
+                        </h3>
                       </div>
                     </div>
                     <div className="detail-summery">
@@ -40,7 +49,9 @@ const Profile = () => {
                             </div>
                           </div>
                           <div className="col-12 col-sm-6">
-                            <div className="value">johndoe</div>
+                            <div className="value">
+                              {props.basicAuthDetail.user.username}
+                            </div>
                           </div>
                         </div>
                         <div className="row">
@@ -50,7 +61,11 @@ const Profile = () => {
                             </div>
                           </div>
                           <div className="col-12 col-sm-6">
-                            <div className="value">John Doe</div>
+                            <div className="value">
+                              {props.basicAuthDetail.user.firstName +
+                                " " +
+                                props.basicAuthDetail.user.lastName}
+                            </div>
                           </div>
                         </div>
                         <div className="row">
@@ -60,7 +75,9 @@ const Profile = () => {
                             </div>
                           </div>
                           <div className="col-12 col-sm-6">
-                            <div className="value">johndoe@demo.com</div>
+                            <div className="value">
+                              {props.basicAuthDetail.user.email}
+                            </div>
                           </div>
                         </div>
                       </div>

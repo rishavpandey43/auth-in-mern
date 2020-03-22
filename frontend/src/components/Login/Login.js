@@ -1,16 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import "./login.css";
+
+import Loading from "../Loading/Loading";
+
 const Login = props => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  useEffect(() => {
+    const isAuthenticated =
+      props.basicAuthDetail.isAuthenticated ||
+      props.cookieAuthDetail.isAuthenticated ||
+      props.sessionAuthDetail.isAuthenticated ||
+      props.tokenAuthDetail.isAuthenticated;
+    if (isAuthenticated) {
+      props.history.push("/profile/" + props.basicAuthDetail.user.username);
+    }
+  }, [
+    props.basicAuthDetail.isAuthenticated,
+    props.cookieAuthDetail.isAuthenticated,
+    props.sessionAuthDetail.isAuthenticated,
+    props.tokenAuthDetail.isAuthenticated
+  ]);
+  useEffect(() => {
+    setAlertMessage({
+      successMessage: props.basicAuthDetail.successMessage,
+      errMessage: props.basicAuthDetail.errMessage
+    });
+  }, [props.basicAuthDetail.successMessage, props.basicAuthDetail.errMessage]);
+
+  const [state, setState] = useState({
+    userDetail: {
+      email: "",
+      password: ""
+    }
+  });
+
+  const [alertMessage, setAlertMessage] = useState({
+    successMessage: props.basicAuthDetail.successMessage,
+    errMessage: props.basicAuthDetail.errMessage
+  });
+
+  const handleInputChange = e => {
+    const value = e.target.value;
+    let tempTarget = state.userDetail;
+    tempTarget[e.target.name] = value;
+    setState({ ...state, userDetail: tempTarget });
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
-    const credential = { email, password };
-    props.login(credential);
+    const userDetail = { ...state.userDetail };
+    props.loginFetch1(userDetail);
   };
+
+  const isLoading =
+    props.basicAuthDetail.isLoading ||
+    props.cookieAuthDetail.isLoading ||
+    props.sessionAuthDetail.isLoading ||
+    props.tokenAuthDetail.isLoading;
 
   return (
     <div className="login-signup-wrapper">
@@ -30,8 +77,9 @@ const Login = props => {
                       className="form-control"
                       placeholder="johndoe@demo.com"
                       required
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
+                      name="email"
+                      value={state.userDetail.email}
+                      onChange={handleInputChange}
                     />
                   </div>
                   <div className="form-group">
@@ -40,8 +88,9 @@ const Login = props => {
                       type="password"
                       className="form-control"
                       required
-                      value={password}
-                      onChange={e => setPassword(e.target.value)}
+                      name="password"
+                      value={state.userDetail.password}
+                      onChange={handleInputChange}
                     />
                   </div>
                   <div className="form-group form-check">
@@ -57,8 +106,9 @@ const Login = props => {
                     </Link>
                   </small>
                   <button type="submit" className="btn btn-primary">
-                    Login
+                    Normal Login
                   </button>
+                  <Loading isTrue={isLoading} />
                 </form>
               </div>
             </div>
