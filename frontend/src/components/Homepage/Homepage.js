@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import "./homepage.css";
 
 const HomePage = props => {
+  useEffect(() => {
+    if (props.basicAuthDetail.isAuthenticated) {
+      props.history.push("/profile/" + props.basicAuthDetail.user.username);
+    }
+  }, []);
+
   return (
     <div className="container">
       <div className="col-12 col-sm-6 m-auto">

@@ -9,21 +9,21 @@ const initialState = {
 
 const cookieAuthDetail = (state = initialState, action) => {
   switch (action.type) {
-    case ActionTypes.LOGIN_REQUEST:
+    case ActionTypes.LOGIN_REQUEST2:
       return {
         ...state,
         isLoading: true,
         isAuthenticated: false,
         user: action.credentials
       };
-    case ActionTypes.LOGIN_SUCCESS:
+    case ActionTypes.LOGIN_SUCCESS2:
       return {
         ...state,
         isLoading: false,
         isAuthenticated: true,
         errMessage: ""
       };
-    case ActionTypes.LOGIN_FAILURE:
+    case ActionTypes.LOGIN_FAILURE2:
       return {
         ...state,
         isLoading: false,
