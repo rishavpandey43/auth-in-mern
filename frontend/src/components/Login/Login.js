@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 import "./login.css";
@@ -13,6 +14,7 @@ const Login = props => {
       props.sessionAuthDetail.isAuthenticated ||
       props.tokenAuthDetail.isAuthenticated;
     if (isAuthenticated) {
+      axios.get();
       props.history.push("/profile/" + props.basicAuthDetail.user.username);
     }
   }, [
@@ -47,10 +49,15 @@ const Login = props => {
     setState({ ...state, userDetail: tempTarget });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (type, e) => {
     e.preventDefault();
     const userDetail = { ...state.userDetail };
-    props.loginFetch1(userDetail);
+    if (type === "BASIC") {
+      props.loginFetchBasic(userDetail);
+    }
+    if (type === "COOKIE") {
+      props.loginFetchCookie(userDetail);
+    }
   };
 
   const isLoading =
@@ -69,7 +76,7 @@ const Login = props => {
                 <h3>Welcome Back</h3>
               </div>
               <div className="card-body">
-                <form onSubmit={handleSubmit}>
+                <form>
                   <div className="form-group">
                     <label>Email</label>
                     <input
@@ -105,8 +112,28 @@ const Login = props => {
                       Sign up
                     </Link>
                   </small>
-                  <button type="submit" className="btn btn-primary">
-                    Normal Login
+                  <button
+                    type="submit"
+                    className="btn m-2 btn-primary"
+                    onClick={handleSubmit.bind(null, "BASIC")}
+                  >
+                    Default Login (Browser will not store login information)
+                  </button>
+                  <br />
+                  <button
+                    type="submit"
+                    className="btn m-2 btn-primary"
+                    onClick={handleSubmit.bind(null, "COOKIE")}
+                  >
+                    Login with Cookie and JWT
+                  </button>
+                  <br />
+                  <button
+                    type="submit"
+                    className="btn m-2 btn-primary"
+                    onClick={handleSubmit}
+                  >
+                    Login with Session
                   </button>
                   <Loading isTrue={isLoading} />
                 </form>

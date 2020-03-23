@@ -14,7 +14,7 @@ const Header = props => {
           <ul className="navbar-nav mr-auto">
             {props.basicAuthDetail.isAuthenticated ? (
               <li className="nav-item active">
-                <span onClick={props.logoutFetch1} className="btn">
+                <span onClick={props.logoutFetchBasic} className="btn">
                   Logout
                 </span>
               </li>

@@ -9,21 +9,21 @@ const initialState = {
 
 const sessionAuthDetail = (state = initialState, action) => {
   switch (action.type) {
-    case ActionTypes.LOGIN_REQUEST2:
+    case ActionTypes.LOGIN_REQUEST_COOKIE:
       return {
         ...state,
         isLoading: true,
         isAuthenticated: false,
         user: action.credentials
       };
-    case ActionTypes.LOGIN_SUCCESS2:
+    case ActionTypes.LOGIN_SUCCESS_COOKIE:
       return {
         ...state,
         isLoading: false,
         isAuthenticated: true,
         errMessage: ""
       };
-    case ActionTypes.LOGIN_FAILURE2:
+    case ActionTypes.LOGIN_FAILURE_COOKIE:
       return {
         ...state,
         isLoading: false,

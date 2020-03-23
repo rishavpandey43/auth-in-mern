@@ -8,7 +8,6 @@ const whiteList = [
 
 const corsOptionDelegate = (req, callback) => {
   let corsOptions;
-  console.log(req.header("Origin"));
   if (whiteList.indexOf(req.header("Origin")) !== -1) {
     corsOptions = { origin: true };
   } else corsOptions = { origin: false };

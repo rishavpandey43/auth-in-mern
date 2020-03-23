@@ -4,7 +4,9 @@ const initialState = {
   isLoading: false,
   isAuthenticated: false,
   errMessage: null,
-  successMessage: null
+  successMessage: null,
+  userCredentials: null,
+  user: null
 };
 
 const basicAuthDetail = (state = initialState, action) => {
@@ -17,16 +19,17 @@ const basicAuthDetail = (state = initialState, action) => {
     //     errMessage: null,
     //     successMessage: null
     //   };
-    case ActionTypes.LOGIN_REQUEST1:
+    case ActionTypes.LOGIN_REQUEST_BASIC:
       return {
         ...state,
         isLoading: false,
         isAuthenticated: false,
         errMessage: null,
+        userCredentials: action.userCredentials,
         user: null,
         successMessage: null
       };
-    case ActionTypes.LOGIN_SUCCESS1:
+    case ActionTypes.LOGIN_SUCCESS_BASIC:
       return {
         ...state,
         isLoading: false,
@@ -35,7 +38,7 @@ const basicAuthDetail = (state = initialState, action) => {
         user: action.user,
         successMessage: action.successMessage
       };
-    case ActionTypes.LOGIN_FAILURE1:
+    case ActionTypes.LOGIN_FAILURE_BASIC:
       return {
         ...state,
         isLoading: false,
@@ -44,12 +47,12 @@ const basicAuthDetail = (state = initialState, action) => {
         user: null,
         successMessage: null
       };
-    case ActionTypes.LOGOUT_REQUEST1:
+    case ActionTypes.LOGOUT_REQUEST_BASIC:
       return {
         ...state,
         isLoading: true
       };
-    case ActionTypes.LOGOUT_SUCCESS1:
+    case ActionTypes.LOGOUT_SUCCESS_BASIC:
       return {
         ...state,
         isLoading: false,
@@ -58,7 +61,7 @@ const basicAuthDetail = (state = initialState, action) => {
         user: null,
         successMessage: null
       };
-    case ActionTypes.LOGOUT_FAILURE1:
+    case ActionTypes.LOGOUT_FAILURE_BASIC:
       return {
         ...state,
         isLoading: false
