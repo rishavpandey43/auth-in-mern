@@ -4,7 +4,7 @@ const initialState = null;
 
 const userDetail = (state = initialState, action) => {
   switch (action.type) {
-    case ActionTypes.USER_DETAIL:
+    case ActionTypes.SET_USER_DETAIL:
       return {
         ...state,
         username: action.user.username,
@@ -12,6 +12,8 @@ const userDetail = (state = initialState, action) => {
         firstName: action.user.firstName,
         lastName: action.user.lastName
       };
+    case ActionTypes.REMOVE_USER_DETAIL:
+      return null;
     default:
       return state;
   }

@@ -10,23 +10,17 @@ const Login = props => {
   useEffect(() => {
     const isAuthenticated =
       props.basicAuthDetail.isAuthenticated ||
-      props.sessionAuthDetail.isAuthenticated ||
-      props.tokenAuthDetail.isAuthenticated;
+      props.tokenAuthDetail.isAuthenticated ||
+      props.sessionAuthDetail.isAuthenticated;
     if (isAuthenticated) {
       props.history.push("/");
     }
   }, [
     props.basicAuthDetail.isAuthenticated,
     ,
-    props.sessionAuthDetail.isAuthenticated,
-    props.tokenAuthDetail.isAuthenticated
+    props.tokenAuthDetail.isAuthenticated,
+    props.sessionAuthDetail.isAuthenticated
   ]);
-  useEffect(() => {
-    setAlertMessage({
-      successMessage: props.basicAuthDetail.successMessage,
-      errMessage: props.basicAuthDetail.errMessage
-    });
-  }, [props.basicAuthDetail.successMessage, props.basicAuthDetail.errMessage]);
 
   const [state, setState] = useState({
     credentials: {
@@ -38,11 +32,6 @@ const Login = props => {
     sessionStorageType: 0 // here 0 represents cookie and 1 represents local storage
   });
 
-  const [alertMessage, setAlertMessage] = useState({
-    successMessage: props.basicAuthDetail.successMessage,
-    errMessage: props.basicAuthDetail.errMessage
-  });
-
   const handleInputChange = e => {
     const value = e.target.value;
     let tempTarget = state.credentials;
@@ -52,18 +41,23 @@ const Login = props => {
 
   const handleSubmit = (type, e) => {
     e.preventDefault();
-    const credentials = { ...state.credentials };
-    if (type === "BASIC") {
-      props.loginFetchBasic(credentials);
-    }
-    if (type === "TOKEN") {
-      props.loginFetchToken({
-        credentials,
-        tokenStorageType: state.tokenStorageType
-      });
-    }
-    if (type === "SESSION") {
-      // props.loginFetchCookie({credentials, sessionStorageType: state.sessionStorageType});
+    if (state.credentials.email === "" || state.credentials.password === "") {
+      alert("Fill the credentials");
+      return;
+    } else {
+      const credentials = { ...state.credentials };
+      if (type === "BASIC") {
+        props.loginFetchBasic(credentials);
+      }
+      if (type === "TOKEN") {
+        props.loginFetchToken({
+          credentials,
+          tokenStorageType: state.tokenStorageType
+        });
+      }
+      if (type === "SESSION") {
+        // props.loginFetchCookie({credentials, sessionStorageType: state.sessionStorageType});
+      }
     }
   };
 
@@ -142,6 +136,12 @@ const Login = props => {
                         Default Login (Browser will not store login information)
                       </button>
                       <Loading isTrue={props.basicAuthDetail.isLoading} />
+                      <span className="text-danger">
+                        {props.basicAuthDetail.successMessage}
+                      </span>
+                      <span className="text-danger">
+                        {props.basicAuthDetail.errMessage}
+                      </span>
                     </div>
                   </div>
                   <div className="btn-main-wrapper">
@@ -192,6 +192,12 @@ const Login = props => {
                         Token Based Authentication
                       </button>
                       <Loading isTrue={props.tokenAuthDetail.isLoading} />
+                      <span className="text-danger">
+                        {props.tokenAuthDetail.successMessage}
+                      </span>
+                      <span className="text-danger">
+                        {props.tokenAuthDetail.errMessage}
+                      </span>
                     </div>
                   </div>
 
@@ -243,6 +249,12 @@ const Login = props => {
                         Session Based Authentication
                       </button>
                       <Loading isTrue={props.sessionAuthDetail.isLoading} />
+                      <span className="text-danger">
+                        {props.sessionAuthDetail.successMessage}
+                      </span>
+                      <span className="text-danger">
+                        {props.sessionAuthDetail.errMessage}
+                      </span>
                     </div>
                   </div>
                 </form>

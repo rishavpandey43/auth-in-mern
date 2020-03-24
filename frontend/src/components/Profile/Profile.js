@@ -7,33 +7,47 @@ const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 const Profile = props => {
   useEffect(() => {
-    const username = props.location.pathname.split("/")[2];
-    axios
-      .get(
-        baseUrl + "api/v2/users/login-detail",
-        {
-          params: {
-            username,
-            token: localStorage.getItem("auth_practice_token")
+    if (props.userDetail) {
+      console.log("BASIC AUTH");
+      axios
+        .get("https://quotes.rest/qod?category=inspire")
+        .then(res => {
+          setQuote({
+            quote: res.data.contents.quotes[0].quote,
+            author: res.data.contents.quotes[0].author
+          });
+        })
+        .catch(err => console.log(err));
+      // props.history.push(`/profile/${props.userDetail.username}`);
+    } else if (!props.userDetail) {
+      const username = props.location.pathname.split("/")[2];
+      axios
+        .get(
+          baseUrl + "api/v2/users/login-detail",
+          {
+            params: {
+              username,
+              token: localStorage.getItem("auth_practice_token")
+            }
+          },
+          {
+            headers: { "Content-Type": "application/json" }
           }
-        },
-        {
-          headers: { "Content-Type": "application/json" }
-        }
-      )
-      .then(res => {
-        props.setUserDetail(res.data.user);
-        axios
-          .get("https://quotes.rest/qod?category=inspire")
-          .then(res => {
-            setQuote({
-              quote: res.data.contents.quotes[0].quote,
-              author: res.data.contents.quotes[0].author
-            });
-          })
-          .catch(err => console.log(err));
-      })
-      .catch(err => console.log(err));
+        )
+        .then(res => {
+          props.setUserDetail(res.data.user);
+          axios
+            .get("https://quotes.rest/qod?category=inspire")
+            .then(res => {
+              setQuote({
+                quote: res.data.contents.quotes[0].quote,
+                author: res.data.contents.quotes[0].author
+              });
+            })
+            .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+    }
   }, []);
 
   const [quote, setQuote] = useState(null);

@@ -2,20 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Header = props => {
-  const isAuthenticated =
-    props.basicAuthDetail.isAuthenticated ||
-    props.sessionAuthDetail.isAuthenticated ||
-    props.tokenAuthDetail.isAuthenticated;
-
   const handleSubmit = (type, e) => {
-    if (document.cookie.split("=")[1]) {
-      props.logoutFetchCookie();
+    if (type === "BASIC") {
+      props.logoutFetchBasic();
     }
-    props.logoutFetchToken();
-
-    // if (type === "COOKIE") {
-    //   props.loginFetchCookie(userDetail);
-    // }
+    if (type === "TOKEN") {
+      props.logoutFetchToken();
+    }
   };
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -27,10 +20,34 @@ const Header = props => {
         </div>
         <div>
           <ul className="navbar-nav mr-auto">
-            {isAuthenticated ? (
+            {props.basicAuthDetail.isAuthenticated ? (
               <li className="nav-item active">
                 <span
                   onClick={handleSubmit.bind(null, "BASIC")}
+                  className="btn"
+                >
+                  Logout
+                </span>
+              </li>
+            ) : (
+              ""
+            )}
+            {props.tokenAuthDetail.isAuthenticated ? (
+              <li className="nav-item active">
+                <span
+                  onClick={handleSubmit.bind(null, "TOKEN")}
+                  className="btn"
+                >
+                  Logout
+                </span>
+              </li>
+            ) : (
+              ""
+            )}
+            {props.sessionAuthDetail.isAuthenticated ? (
+              <li className="nav-item active">
+                <span
+                  onClick={handleSubmit.bind(null, "SESSION")}
                   className="btn"
                 >
                   Logout
