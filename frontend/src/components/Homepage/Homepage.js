@@ -1,12 +1,39 @@
 import React, { useEffect } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 import "./homepage.css";
 
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
+
 const HomePage = props => {
   useEffect(() => {
-    if (props.basicAuthDetail.isAuthenticated) {
-      props.history.push("/profile/" + props.basicAuthDetail.user.username);
+    const isAuthenticated =
+      props.basicAuthDetail.isAuthenticated ||
+      props.sessionAuthDetail.isAuthenticated ||
+      props.tokenAuthDetail.isAuthenticated;
+    if (isAuthenticated) {
+      if (props.userDetail) {
+        console.log("BASIC AUTH");
+        props.history.push(`/profile/${props.userDetail.username}`);
+      } else if (!props.userDetail) {
+        axios
+          .get(
+            baseUrl + "api/v2/users/get-username",
+            {
+              params: {
+                token: localStorage.getItem("auth_practice_token")
+              }
+            },
+            {
+              headers: { "Content-Type": "application/json" }
+            }
+          )
+          .then(res => {
+            props.history.push(`/profile/${res.data.user.username}`);
+          })
+          .catch(err => console.log(err));
+      }
     }
   }, []);
 

@@ -1,10 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const createError = require("http-errors");
+const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const dotenv = require("dotenv");
 
 const userRouter1 = require("./routes/user.router.v1");
+const userRouter2 = require("./routes/user.router.v2");
 
 // configure dotenv to access environment variable
 dotenv.config();
@@ -31,6 +32,7 @@ connection.on("error", function(err) {
 });
 
 // use several middleware
+app.use(cookieParser(process.env.COOKIE_SECRET_KEY));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -38,6 +40,7 @@ app.use(express.urlencoded({ extended: false }));
 app.get("/", (req, res) => res.send("Hello World!"));
 
 app.use("/api/v1/users", userRouter1);
+app.use("/api/v2/users", userRouter2);
 
 // error handler
 app.use((err, req, res, next) => {

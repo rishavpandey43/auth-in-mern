@@ -1,15 +1,15 @@
 import { combineReducers } from "redux";
 
 import basicAuthDetail from "./basicAuthDetail";
-import cookieAuthDetail from "./cookieAuthDetail";
 import sessionAuthDetail from "./sessionAuthDetail";
 import tokenAuthDetail from "./tokenAuthDetail";
+import userDetail from "./userDetail";
 
 const rootReducer = combineReducers({
   basicAuthDetail,
-  cookieAuthDetail,
   sessionAuthDetail,
-  tokenAuthDetail
+  tokenAuthDetail,
+  userDetail
 });
 
 export default rootReducer;
