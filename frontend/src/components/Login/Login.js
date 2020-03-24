@@ -10,7 +10,6 @@ const Login = props => {
   useEffect(() => {
     const isAuthenticated =
       props.basicAuthDetail.isAuthenticated ||
-      props.cookieAuthDetail.isAuthenticated ||
       props.sessionAuthDetail.isAuthenticated ||
       props.tokenAuthDetail.isAuthenticated;
     if (isAuthenticated) {
@@ -18,7 +17,7 @@ const Login = props => {
     }
   }, [
     props.basicAuthDetail.isAuthenticated,
-    props.cookieAuthDetail.isAuthenticated,
+    ,
     props.sessionAuthDetail.isAuthenticated,
     props.tokenAuthDetail.isAuthenticated
   ]);

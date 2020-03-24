@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 const Header = props => {
   const isAuthenticated =
     props.basicAuthDetail.isAuthenticated ||
-    props.cookieAuthDetail.isAuthenticated ||
     props.sessionAuthDetail.isAuthenticated ||
     props.tokenAuthDetail.isAuthenticated;
 

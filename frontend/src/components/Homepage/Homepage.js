@@ -10,7 +10,6 @@ const HomePage = props => {
   useEffect(() => {
     const isAuthenticated =
       props.basicAuthDetail.isAuthenticated ||
-      props.cookieAuthDetail.isAuthenticated ||
       props.sessionAuthDetail.isAuthenticated ||
       props.tokenAuthDetail.isAuthenticated;
     if (isAuthenticated) {
