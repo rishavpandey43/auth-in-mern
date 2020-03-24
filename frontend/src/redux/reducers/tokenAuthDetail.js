@@ -15,7 +15,8 @@ const tokenAuthDetail = (state = initialState, action) => {
       return {
         ...state,
         isLoading: true,
-        isAuthenticated: false
+        isAuthenticated: false,
+        errMessage: ""
       };
     case ActionTypes.LOGIN_SUCCESS_TOKEN:
       return {
@@ -31,7 +32,7 @@ const tokenAuthDetail = (state = initialState, action) => {
         ...state,
         isLoading: false,
         isAuthenticated: false,
-        errMessage: action.message
+        errMessage: action.errMessage
       };
     case ActionTypes.VALIDATE_TOKEN_REQUEST:
       return {
@@ -51,7 +52,7 @@ const tokenAuthDetail = (state = initialState, action) => {
         isAuthenticated: false,
         errMessage: action.message
       };
-    case ActionTypes.LOGIN_REQUEST_TOKEN:
+    case ActionTypes.LOGOUT_REQUEST_TOKEN:
       return {
         ...state,
         isLoading: true

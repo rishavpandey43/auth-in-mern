@@ -2,13 +2,6 @@ import axios from "axios";
 
 import * as ActionTypes from "./actionTypes";
 
-export const setLoginType = response => {
-  return {
-    type: ActionTypes.SET_LOGIN_TYPE,
-    loginType: response
-  };
-};
-
 /* Below Actions are only for basic authentication, where browser doesn't remember any data. You need to send username, password for every request */
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
@@ -23,7 +16,6 @@ export const loginRequestBasic = response => {
 export const loginSuccessBasic = response => {
   return {
     type: ActionTypes.LOGIN_SUCCESS_BASIC,
-    user: response.user,
     successMessage: response.message
   };
 };
@@ -37,7 +29,6 @@ export const loginFailureBasic = response => {
 
 export const loginFetchBasic = credentials => dispatch => {
   // dispatch the action
-  dispatch(setLoginType("BASIC"));
   dispatch(loginRequestBasic(credentials));
 
   // establish connection with server
@@ -47,6 +38,7 @@ export const loginFetchBasic = credentials => dispatch => {
     })
     .then(res => {
       dispatch(loginSuccessBasic(res.data));
+      dispatch(setUserDetail(res.data.user));
     })
     .catch(err => {
       err.response
@@ -67,6 +59,7 @@ export const logoutSuccessBasic = () => {
 
 export const logoutFetchBasic = () => dispatch => {
   dispatch(logoutSuccessBasic());
+  dispatch(removeUserDetail());
 };
 
 /* Below Actions are only for token based authentication, where browser will remember necessary data in the form of cookie or local storage. */
@@ -161,7 +154,7 @@ export const loginFetchToken = ({
 
 export const logoutRequestToken = () => {
   return {
-    type: ActionTypes.LOGIN_REQUEST_TOKEN
+    type: ActionTypes.LOGOUT_REQUEST_TOKEN
   };
 };
 
@@ -173,13 +166,12 @@ export const logoutSuccessToken = () => {
 
 export const logoutFailureToken = response => {
   return {
-    type: ActionTypes.LOGIN_FAILURE_TOKEN,
+    type: ActionTypes.LOGOUT_FAILURE_TOKEN,
     errMessage: response
   };
 };
 
 export const logoutFetchToken = () => dispatch => {
-  console.log("logout start");
   dispatch(logoutRequestToken());
   if (localStorage.getItem("auth_practice_token")) {
     console.log("Token found");
@@ -187,13 +179,20 @@ export const logoutFetchToken = () => dispatch => {
   }
   if (!localStorage.getItem("auth_practice_token")) {
     dispatch(logoutSuccessToken());
+    dispatch(removeUserDetail());
     console.log("No token");
   }
 };
 
 export const setUserDetail = response => {
   return {
-    type: ActionTypes.USER_DETAIL,
+    type: ActionTypes.SET_USER_DETAIL,
     user: response
+  };
+};
+
+export const removeUserDetail = response => {
+  return {
+    type: ActionTypes.REMOVE_USER_DETAIL
   };
 };
