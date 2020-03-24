@@ -4,7 +4,6 @@ import { Redirect, Route } from "react-router-dom";
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const isAuthenticated =
     rest.basicAuthDetail.isAuthenticated ||
-    rest.cookieAuthDetail.isAuthenticated ||
     rest.sessionAuthDetail.isAuthenticated ||
     rest.tokenAuthDetail.isAuthenticated;
   return (

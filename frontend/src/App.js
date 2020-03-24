@@ -25,7 +25,7 @@ export default function MainApp(props) {
           <Route path="/login" component={() => <Login {...props} />} />
           <PrivateRoute
             exact
-            path="/profile/:name"
+            path="/profile/:username"
             component={Profile}
             {...props}
           />

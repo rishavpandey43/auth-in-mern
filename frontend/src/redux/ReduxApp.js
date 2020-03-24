@@ -10,7 +10,8 @@ const mapStateToProps = state => ({
   basicAuthDetail: state.basicAuthDetail,
   cookieAuthDetail: state.cookieAuthDetail,
   sessionAuthDetail: state.sessionAuthDetail,
-  tokenAuthDetail: state.tokenAuthDetail
+  tokenAuthDetail: state.tokenAuthDetail,
+  userDetail: state.userDetail
 });
 
 const mapDispatchToProps = dispatch =>
