@@ -1,12 +1,20 @@
 import React, { useEffect } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 import "./homepage.css";
 
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
+
 const HomePage = props => {
   useEffect(() => {
-    if (props.basicAuthDetail.isAuthenticated) {
-      props.history.push("/profile/" + props.basicAuthDetail.user.username);
+    const isAuthenticated =
+      props.basicAuthDetail.isAuthenticated ||
+      props.cookieAuthDetail.isAuthenticated ||
+      props.sessionAuthDetail.isAuthenticated ||
+      props.tokenAuthDetail.isAuthenticated;
+    if (isAuthenticated) {
+      props.history.push("/profile/");
     }
   }, []);
 

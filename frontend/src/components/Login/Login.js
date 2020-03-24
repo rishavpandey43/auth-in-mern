@@ -14,8 +14,7 @@ const Login = props => {
       props.sessionAuthDetail.isAuthenticated ||
       props.tokenAuthDetail.isAuthenticated;
     if (isAuthenticated) {
-      axios.get();
-      props.history.push("/profile/" + props.basicAuthDetail.user.username);
+      props.history.push("/");
     }
   }, [
     props.basicAuthDetail.isAuthenticated,
@@ -31,10 +30,13 @@ const Login = props => {
   }, [props.basicAuthDetail.successMessage, props.basicAuthDetail.errMessage]);
 
   const [state, setState] = useState({
-    userDetail: {
+    credentials: {
       email: "",
       password: ""
-    }
+    },
+    rememberUser: false,
+    tokenStorageType: 1, // here 0 represents cookie and 1 represents local storage
+    sessionStorageType: 0 // here 0 represents cookie and 1 represents local storage
   });
 
   const [alertMessage, setAlertMessage] = useState({
@@ -44,27 +46,27 @@ const Login = props => {
 
   const handleInputChange = e => {
     const value = e.target.value;
-    let tempTarget = state.userDetail;
+    let tempTarget = state.credentials;
     tempTarget[e.target.name] = value;
-    setState({ ...state, userDetail: tempTarget });
+    setState({ ...state, credentials: tempTarget });
   };
 
   const handleSubmit = (type, e) => {
     e.preventDefault();
-    const userDetail = { ...state.userDetail };
+    const credentials = { ...state.credentials };
     if (type === "BASIC") {
-      props.loginFetchBasic(userDetail);
+      props.loginFetchBasic(credentials);
     }
-    if (type === "COOKIE") {
-      props.loginFetchCookie(userDetail);
+    if (type === "TOKEN") {
+      props.loginFetchToken({
+        credentials,
+        tokenStorageType: state.tokenStorageType
+      });
+    }
+    if (type === "SESSION") {
+      // props.loginFetchCookie({credentials, sessionStorageType: state.sessionStorageType});
     }
   };
-
-  const isLoading =
-    props.basicAuthDetail.isLoading ||
-    props.cookieAuthDetail.isLoading ||
-    props.sessionAuthDetail.isLoading ||
-    props.tokenAuthDetail.isLoading;
 
   return (
     <div className="login-signup-wrapper">
@@ -85,7 +87,7 @@ const Login = props => {
                       placeholder="johndoe@demo.com"
                       required
                       name="email"
-                      value={state.userDetail.email}
+                      value={state.credentials.email}
                       onChange={handleInputChange}
                     />
                   </div>
@@ -96,14 +98,33 @@ const Login = props => {
                       className="form-control"
                       required
                       name="password"
-                      value={state.userDetail.password}
+                      value={state.credentials.password}
                       onChange={handleInputChange}
                     />
                   </div>
-                  <div className="form-group form-check">
-                    <label className="form-check-label">
-                      <input type="checkbox" className="form-check-input" />
-                      Remember me
+                  <div className="custom-control custom-checkbox">
+                    <input
+                      type="checkbox"
+                      className="custom-control-input"
+                      name="rememberUser"
+                      checked={state.rememberUser ? true : false}
+                      onChange={() =>
+                        setState({
+                          ...state,
+                          rememberUser: state.rememberUser ? false : true
+                        })
+                      }
+                    />
+                    <label
+                      className="custom-control-label"
+                      onClick={() =>
+                        setState({
+                          ...state,
+                          rememberUser: state.rememberUser ? false : true
+                        })
+                      }
+                    >
+                      Remember me (This will not work with default login)
                     </label>
                   </div>
                   <small className="form-text text-muted mb-4">
@@ -112,30 +133,119 @@ const Login = props => {
                       Sign up
                     </Link>
                   </small>
-                  <button
-                    type="submit"
-                    className="btn m-2 btn-primary"
-                    onClick={handleSubmit.bind(null, "BASIC")}
-                  >
-                    Default Login (Browser will not store login information)
-                  </button>
-                  <br />
-                  <button
-                    type="submit"
-                    className="btn m-2 btn-primary"
-                    onClick={handleSubmit.bind(null, "COOKIE")}
-                  >
-                    Login with Cookie and JWT
-                  </button>
-                  <br />
-                  <button
-                    type="submit"
-                    className="btn m-2 btn-primary"
-                    onClick={handleSubmit}
-                  >
-                    Login with Session
-                  </button>
-                  <Loading isTrue={isLoading} />
+                  <div className="btn-main-wrapper">
+                    <div className="btn-wrapper">
+                      <button
+                        type="submit"
+                        className="btn mb-3 mt-1 btn-primary"
+                        onClick={handleSubmit.bind(null, "BASIC")}
+                      >
+                        Default Login (Browser will not store login information)
+                      </button>
+                      <Loading isTrue={props.basicAuthDetail.isLoading} />
+                    </div>
+                  </div>
+                  <div className="btn-main-wrapper">
+                    <div className="custom-control custom-radio custom-control-inline">
+                      <input
+                        type="radio"
+                        name="tokenBased"
+                        className="custom-control-input"
+                        checked={state.tokenStorageType === 0 ? true : false}
+                        onChange={() =>
+                          setState({ ...state, tokenStorageType: 0 })
+                        }
+                      />
+                      <label
+                        className="custom-control-label"
+                        onClick={() =>
+                          setState({ ...state, tokenStorageType: 0 })
+                        }
+                      >
+                        Using Cookie
+                      </label>
+                    </div>
+                    <div className="custom-control custom-radio custom-control-inline">
+                      <input
+                        type="radio"
+                        name="tokenBased"
+                        className="custom-control-input"
+                        checked={state.tokenStorageType === 1 ? true : false}
+                        onChange={e =>
+                          setState({ ...state, tokenStorageType: 1 })
+                        }
+                      />
+                      <label
+                        className="custom-control-label"
+                        onClick={() =>
+                          setState({ ...state, tokenStorageType: 1 })
+                        }
+                      >
+                        Using Local Storage
+                      </label>
+                    </div>
+                    <div className="btn-wrapper">
+                      <button
+                        type="submit"
+                        className="btn mb-3 mt-1 btn-primary"
+                        onClick={handleSubmit.bind(null, "TOKEN")}
+                      >
+                        Token Based Authentication
+                      </button>
+                      <Loading isTrue={props.tokenAuthDetail.isLoading} />
+                    </div>
+                  </div>
+
+                  <div className="btn-main-wrapper">
+                    <div className="custom-control custom-radio custom-control-inline">
+                      <input
+                        type="radio"
+                        name="sessionBased"
+                        className="custom-control-input"
+                        checked={state.sessionStorageType === 0 ? true : false}
+                        onChange={e =>
+                          setState({ ...state, sessionStorageType: 0 })
+                        }
+                      />
+                      <label
+                        className="custom-control-label"
+                        onClick={() =>
+                          setState({ ...state, sessionStorageType: 0 })
+                        }
+                      >
+                        Using Cookie
+                      </label>
+                    </div>
+                    <div className="custom-control custom-radio custom-control-inline">
+                      <input
+                        type="radio"
+                        name="sessionBased"
+                        className="custom-control-input"
+                        checked={state.sessionStorageType === 1 ? true : false}
+                        onChange={e =>
+                          setState({ ...state, sessionStorageType: 1 })
+                        }
+                      />
+                      <label
+                        className="custom-control-label"
+                        onClick={() =>
+                          setState({ ...state, sessionStorageType: 1 })
+                        }
+                      >
+                        Using Local Storage
+                      </label>
+                    </div>
+                    <div className="btn-wrapper">
+                      <button
+                        type="submit"
+                        className="btn mb-3 mt-1 btn-primary"
+                        onClick={handleSubmit.bind(null, "SESSION")}
+                      >
+                        Session Based Authentication
+                      </button>
+                      <Loading isTrue={props.sessionAuthDetail.isLoading} />
+                    </div>
+                  </div>
                 </form>
               </div>
             </div>

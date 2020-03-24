@@ -101,21 +101,20 @@ userRouterV2
             .then(validPassword => {
               if (validPassword) {
                 // Issue JWT Token on validation
-                const payload = user._id;
                 const token = jwt.sign(
-                  { userId: payload },
+                  { userId: user._id },
                   process.env.JWT_SECRET_KEY,
                   {
                     expiresIn: 90000
                   }
                 );
                 res.statusCode = 200;
-                res.setHeader("WWW-Authenticate", "Basic");
                 res.cookie("token", token, {
                   expires: new Date(Date.now() + 90000),
                   httpOnly: true,
                   signed: true
                 });
+                console.log(req.signedCookies);
                 res.json({
                   token,
                   message: "You're logged in Successfully"
@@ -134,19 +133,5 @@ userRouterV2
       })
       .catch(err => next(err));
   });
-
-userRouterV2.post(
-  "/validate-cookie",
-  cors.corsWithOptions,
-  verifyCookie,
-  (req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader("WWW-Authenticate", "Basic");
-    res.json({
-      userId: req.userId,
-      message: "You're successfully verified"
-    });
-  }
-);
 
 module.exports = userRouterV2;

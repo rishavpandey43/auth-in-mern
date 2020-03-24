@@ -6,6 +6,8 @@ const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 const verifyCookie = (req, res, next) => {
   const token = req.signedCookies.token || req.body.token;
+  console.log(token);
+  next();
   if (!token) {
     let err = new Error();
     err.status = 401;
