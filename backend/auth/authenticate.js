@@ -4,10 +4,8 @@ dotenv.config();
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
-const verifyCookie = (req, res, next) => {
-  const token = req.signedCookies.token || req.body.token;
-  console.log(token);
-  next();
+const verifyUser = (req, res, next) => {
+  const token = req.signedCookies.token || req.body.token || req.query.token;
   if (!token) {
     let err = new Error();
     err.status = 401;
@@ -21,7 +19,7 @@ const verifyCookie = (req, res, next) => {
         err.message = `Token is invalid`;
         next(err);
       } else {
-        req.userId = data.userId;
+        req._id = data.userId;
         next();
       }
     });
@@ -47,4 +45,4 @@ const authenticate1 = (req, res, next) => {
   }
 };
 
-exports.verifyCookie = verifyCookie;
+exports.verifyUser = verifyUser;

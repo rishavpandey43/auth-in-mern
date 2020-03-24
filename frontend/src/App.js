@@ -23,7 +23,12 @@ export default function MainApp(props) {
           <Route exact path="/" component={() => <HomePage {...props} />} />
           <Route path="/signup" component={() => <Signup {...props} />} />
           <Route path="/login" component={() => <Login {...props} />} />
-          <PrivateRoute exact path="/profile" component={Profile} {...props} />
+          <PrivateRoute
+            exact
+            path="/profile/:username"
+            component={Profile}
+            {...props}
+          />
           <Redirect to="/" />
         </Switch>
       </Router>

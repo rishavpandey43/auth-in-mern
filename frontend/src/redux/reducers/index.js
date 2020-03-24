@@ -3,13 +3,13 @@ import { combineReducers } from "redux";
 import basicAuthDetail from "./basicAuthDetail";
 import sessionAuthDetail from "./sessionAuthDetail";
 import tokenAuthDetail from "./tokenAuthDetail";
-import loginType from "./LoginType";
+import userDetail from "./userDetail";
 
 const rootReducer = combineReducers({
   basicAuthDetail,
   sessionAuthDetail,
   tokenAuthDetail,
-  loginType
+  userDetail
 });
 
 export default rootReducer;

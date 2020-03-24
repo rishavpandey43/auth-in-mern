@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 
 // import cors for proper cross origin request
 const cors = require("../auth/cors");
-const { verifyCookie } = require("../auth/authenticate");
+const { verifyUser } = require("../auth/authenticate");
 
 // import schema model of database
 const User1 = require("../models/user.model.v1");
@@ -19,25 +19,40 @@ userRouterV2.options("*", cors.corsWithOptions, res => {
   res.sendStatus(200);
 });
 
-userRouterV2.get("/private/get", (req, res, next) => {
-  User1.findById(req.userId)
-    .then(user => {
-      res.statusCode = 200;
-      res.setHeader("WWW-Authenticate", "Basic");
-      res.json({
-        message: "",
-        user: {
-          username: user.username,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName
-        }
-      });
-    })
-    .catch(err => next(err));
-});
-
 userRouterV2
+  .get("/get-username", cors.cors, verifyUser, (req, res, next) => {
+    User1.findOne({ _id: req._id })
+      .then(user => {
+        res.statusCode = 200;
+        res.setHeader("WWW-Authenticate", "Basic");
+        res.json({
+          user: {
+            username: user.username
+          }
+        });
+      })
+      .catch(err => {
+        next(err);
+      });
+  })
+  .get("/login-detail", cors.cors, verifyUser, (req, res, next) => {
+    User1.findOne({ _id: req._id })
+      .then(user => {
+        res.statusCode = 200;
+        res.setHeader("WWW-Authenticate", "Basic");
+        res.json({
+          user: {
+            username: user.username,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName
+          }
+        });
+      })
+      .catch(err => {
+        next(err);
+      });
+  })
   .post("/signup", cors.corsWithOptions, (req, res, next) => {
     User1.findOne({ username: req.body.username })
       .then(user => {

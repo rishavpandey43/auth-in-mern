@@ -1,14 +1,44 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 import "./profile.css";
 
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
+
 const Profile = props => {
   useEffect(() => {
-    if (!props.basicAuthDetail.isAuthenticated) {
-      props.history.push("/");
-    }
-  }, [props.basicAuthDetail.isAuthenticated]);
-  return (
+    const username = props.location.pathname.split("/")[2];
+    axios
+      .get(
+        baseUrl + "api/v2/users/login-detail",
+        {
+          params: {
+            username,
+            token: localStorage.getItem("auth_practice_token")
+          }
+        },
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      )
+      .then(res => {
+        props.setUserDetail(res.data.user);
+        axios
+          .get("https://quotes.rest/qod?category=inspire")
+          .then(res => {
+            setQuote({
+              quote: res.data.contents.quotes[0].quote,
+              author: res.data.contents.quotes[0].author
+            });
+          })
+          .catch(err => console.log(err));
+      })
+      .catch(err => console.log(err));
+  }, []);
+
+  const [quote, setQuote] = useState(null);
+
+  return props.userDetail ? (
     <div className="profile-wrapper">
       <div className="container">
         <div className="main-wrapper">
@@ -31,9 +61,9 @@ const Profile = props => {
                       </div>
                       <div className="user-name">
                         <h3>
-                          {props.basicAuthDetail.user.firstName +
+                          {props.userDetail.firstName +
                             " " +
-                            props.basicAuthDetail.user.lastName}
+                            props.userDetail.lastName}
                         </h3>
                       </div>
                     </div>
@@ -50,7 +80,7 @@ const Profile = props => {
                           </div>
                           <div className="col-12 col-sm-6">
                             <div className="value">
-                              {props.basicAuthDetail.user.username}
+                              {props.userDetail.username}
                             </div>
                           </div>
                         </div>
@@ -62,9 +92,9 @@ const Profile = props => {
                           </div>
                           <div className="col-12 col-sm-6">
                             <div className="value">
-                              {props.basicAuthDetail.user.firstName +
+                              {props.userDetail.firstName +
                                 " " +
-                                props.basicAuthDetail.user.lastName}
+                                props.userDetail.lastName}
                             </div>
                           </div>
                         </div>
@@ -76,7 +106,7 @@ const Profile = props => {
                           </div>
                           <div className="col-12 col-sm-6">
                             <div className="value">
-                              {props.basicAuthDetail.user.email}
+                              {props.userDetail.email}
                             </div>
                           </div>
                         </div>
@@ -94,7 +124,12 @@ const Profile = props => {
                   </div>
                   <div className="card-body">
                     <div className="quote">
-                      <span>Culpa elit ea incididunt incididunt eiusmod.</span>
+                      <span className="quote">{quote ? quote.quote : ""}</span>
+                      <br />
+                      <br />
+                      <span className="quote">
+                        {quote ? "~" + quote.author : ""}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -104,6 +139,8 @@ const Profile = props => {
         </div>
       </div>
     </div>
+  ) : (
+    ""
   );
 };
 

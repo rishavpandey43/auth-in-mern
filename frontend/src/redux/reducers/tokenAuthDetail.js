@@ -2,7 +2,7 @@ import * as ActionTypes from "../actions/actionTypes";
 
 const initialState = {
   isLoading: false,
-  isAuthenticated: document.cookie.split("=")[1] ? true : false,
+  isAuthenticated: localStorage.getItem("auth_practice_token") ? true : false,
   userId: null,
   errMessage: null,
   successMessage: null,

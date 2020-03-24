@@ -190,3 +190,10 @@ export const logoutFetchToken = () => dispatch => {
     console.log("No token");
   }
 };
+
+export const setUserDetail = response => {
+  return {
+    type: ActionTypes.USER_DETAIL,
+    user: response
+  };
+};
