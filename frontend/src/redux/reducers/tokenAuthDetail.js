@@ -34,24 +34,6 @@ const tokenAuthDetail = (state = initialState, action) => {
         isAuthenticated: false,
         errMessage: action.errMessage
       };
-    case ActionTypes.VALIDATE_TOKEN_REQUEST:
-      return {
-        ...state,
-        isLoading: true
-      };
-    case ActionTypes.VALIDATE_TOKEN_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        userId: action.userId
-      };
-    case ActionTypes.VALIDATE_TOKEN_FAILURE:
-      return {
-        ...state,
-        isLoading: false,
-        isAuthenticated: false,
-        errMessage: action.message
-      };
     case ActionTypes.LOGOUT_REQUEST_TOKEN:
       return {
         ...state,
@@ -63,6 +45,14 @@ const tokenAuthDetail = (state = initialState, action) => {
         isLoading: false,
         isAuthenticated: false,
         errMessage: "",
+        successMessage: action.successMessage
+      };
+    case ActionTypes.LOGOUT_FAILURE_TOKEN:
+      return {
+        ...state,
+        isLoading: false,
+        isAuthenticated: false,
+        errMessage: action.errMessage,
         successMessage: ""
       };
     default:

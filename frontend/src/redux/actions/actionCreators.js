@@ -120,7 +120,8 @@ export const loginFetchToken = ({
   // establish connection with server
   axios
     .post(baseUrl + "api/v2/users/login", JSON.stringify(newCredentials), {
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true
     })
     .then(res => {
       dispatch(loginSuccessToken(res.data));
@@ -137,30 +138,16 @@ export const loginFetchToken = ({
     });
 };
 
-// export const validateTokenFetch = token => dispatch => {
-//   dispatch(validateTokenRequest());
-
-//   axios
-//     .get(baseUrl + "api/v2/users/validate-cookie")
-//     .then(res => {
-//       console.log(res);
-//       dispatch(validateTokenSuccess(res.data));
-//     })
-//     .catch(err => {
-//       console.log(err.response);
-//       dispatch(validateTokenFailure(err.response.data.message));
-//     });
-// };
-
 export const logoutRequestToken = () => {
   return {
     type: ActionTypes.LOGOUT_REQUEST_TOKEN
   };
 };
 
-export const logoutSuccessToken = () => {
+export const logoutSuccessToken = response => {
   return {
-    type: ActionTypes.LOGOUT_SUCCESS_TOKEN
+    type: ActionTypes.LOGOUT_SUCCESS_TOKEN,
+    successMessage: response.message
   };
 };
 
@@ -173,15 +160,24 @@ export const logoutFailureToken = response => {
 
 export const logoutFetchToken = () => dispatch => {
   dispatch(logoutRequestToken());
-  if (localStorage.getItem("auth_practice_token")) {
-    console.log("Token found");
-    localStorage.removeItem("auth_practice_token");
-  }
-  if (!localStorage.getItem("auth_practice_token")) {
-    dispatch(logoutSuccessToken());
-    dispatch(removeUserDetail());
-    console.log("No token");
-  }
+  axios
+    .get(baseUrl + "api/v2/users/logout", {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true
+    })
+    .then(res => {
+      if (localStorage.getItem("auth_practice_token")) {
+        localStorage.removeItem("auth_practice_token");
+      }
+      if (!localStorage.getItem("auth_practice_token")) {
+        dispatch(logoutSuccessToken(res.data));
+        dispatch(removeUserDetail());
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      dispatch(logoutFailureToken(err.response.data.message));
+    });
 };
 
 export const setUserDetail = response => {

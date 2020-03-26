@@ -7,46 +7,56 @@ const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 const Profile = props => {
   useEffect(() => {
-    if (props.userDetail) {
-      console.log("BASIC AUTH");
-      axios
-        .get("https://quotes.rest/qod?category=inspire")
-        .then(res => {
-          setQuote({
-            quote: res.data.contents.quotes[0].quote,
-            author: res.data.contents.quotes[0].author
+    const isAuthenticated =
+      props.basicAuthDetail.isAuthenticated ||
+      props.sessionAuthDetail.isAuthenticated ||
+      props.tokenAuthDetail.isAuthenticated;
+    if (!isAuthenticated) {
+      props.history.push("/");
+    } else {
+      if (props.userDetail) {
+        axios
+          .get("https://quotes.rest/qod?category=inspire")
+          .then(res => {
+            setQuote({
+              quote: res.data.contents.quotes[0].quote,
+              author: res.data.contents.quotes[0].author
+            });
+          })
+          .catch(err => {
+            setQuote({
+              quote: "Quote can't be retrieved now, try later. ",
+              author: ""
+            });
           });
-        })
-        .catch(err => console.log(err));
-      // props.history.push(`/profile/${props.userDetail.username}`);
-    } else if (!props.userDetail) {
-      const username = props.location.pathname.split("/")[2];
-      axios
-        .get(
-          baseUrl + "api/v2/users/login-detail",
-          {
-            params: {
-              username,
-              token: localStorage.getItem("auth_practice_token")
-            }
-          },
-          {
+      } else if (!props.userDetail) {
+        axios
+          .get(baseUrl + "api/v2/users/user-detail", {
+            withCredentials: true,
             headers: { "Content-Type": "application/json" }
-          }
-        )
-        .then(res => {
-          props.setUserDetail(res.data.user);
-          axios
-            .get("https://quotes.rest/qod?category=inspire")
-            .then(res => {
-              setQuote({
-                quote: res.data.contents.quotes[0].quote,
-                author: res.data.contents.quotes[0].author
+          })
+          .then(res => {
+            props.setUserDetail(res.data.user);
+            axios
+              .get("https://quotes.rest/qod?category=inspire")
+              .then(res => {
+                setQuote({
+                  quote: res.data.contents.quotes[0].quote,
+                  author: res.data.contents.quotes[0].author
+                });
+              })
+              .catch(err => {
+                setQuote({
+                  quote: "Quote can't be retrieved now, try later. ",
+                  author: ""
+                });
               });
-            })
-            .catch(err => console.log(err));
-        })
-        .catch(err => console.log(err));
+          })
+          .catch(err => {
+            console.log(err);
+            // props.logoutFetchToken();
+          });
+      }
     }
   }, []);
 

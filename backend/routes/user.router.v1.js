@@ -5,7 +5,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 
 // import cors for proper cross origin request
-const cors = require("../auth/cors");
+const cors = require("../utils/cors");
 
 const User1 = require("../models/user.model.v1");
 

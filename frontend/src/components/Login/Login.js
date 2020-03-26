@@ -28,7 +28,7 @@ const Login = props => {
       password: ""
     },
     rememberUser: false,
-    tokenStorageType: 1, // here 0 represents cookie and 1 represents local storage
+    tokenStorageType: 0, // here 0 represents cookie and 1 represents local storage
     sessionStorageType: 0 // here 0 represents cookie and 1 represents local storage
   });
 
@@ -164,7 +164,7 @@ const Login = props => {
                         Using Cookie
                       </label>
                     </div>
-                    <div className="custom-control custom-radio custom-control-inline">
+                    {/* <div className="custom-control custom-radio custom-control-inline">
                       <input
                         type="radio"
                         name="tokenBased"
@@ -182,7 +182,7 @@ const Login = props => {
                       >
                         Using Local Storage
                       </label>
-                    </div>
+                    </div> */}
                     <div className="btn-wrapper">
                       <button
                         type="submit"
@@ -221,7 +221,7 @@ const Login = props => {
                         Using Cookie
                       </label>
                     </div>
-                    <div className="custom-control custom-radio custom-control-inline">
+                    {/* <div className="custom-control custom-radio custom-control-inline">
                       <input
                         type="radio"
                         name="sessionBased"
@@ -239,7 +239,7 @@ const Login = props => {
                       >
                         Using Local Storage
                       </label>
-                    </div>
+                    </div> */}
                     <div className="btn-wrapper">
                       <button
                         type="submit"

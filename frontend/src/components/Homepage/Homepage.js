@@ -14,21 +14,13 @@ const HomePage = props => {
       props.tokenAuthDetail.isAuthenticated;
     if (isAuthenticated) {
       if (props.userDetail) {
-        console.log("BASIC AUTH");
         props.history.push(`/profile/${props.userDetail.username}`);
       } else if (!props.userDetail) {
         axios
-          .get(
-            baseUrl + "api/v2/users/get-username",
-            {
-              params: {
-                token: localStorage.getItem("auth_practice_token")
-              }
-            },
-            {
-              headers: { "Content-Type": "application/json" }
-            }
-          )
+          .get(baseUrl + "api/v2/users/get-username", {
+            withCredentials: true,
+            headers: { "Content-Type": "application/json" }
+          })
           .then(res => {
             props.history.push(`/profile/${res.data.user.username}`);
           })
