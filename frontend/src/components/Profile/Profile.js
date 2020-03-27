@@ -11,6 +11,16 @@ const Profile = props => {
       props.basicAuthDetail.isAuthenticated ||
       props.sessionAuthDetail.isAuthenticated ||
       props.tokenAuthDetail.isAuthenticated;
+    let version = "v1";
+    if (props.basicAuthDetail.isAuthenticated) {
+      version = "v1";
+    }
+    if (props.tokenAuthDetail.isAuthenticated) {
+      version = "v2";
+    }
+    if (props.sessionAuthDetail.isAuthenticated) {
+      version = "v3";
+    }
     if (!isAuthenticated) {
       props.history.push("/");
     } else {
@@ -31,7 +41,7 @@ const Profile = props => {
           });
       } else if (!props.userDetail) {
         axios
-          .get(baseUrl + "api/v2/users/user-detail", {
+          .get(`${baseUrl}api/${version}/users/user-detail`, {
             withCredentials: true,
             headers: { "Content-Type": "application/json" }
           })
