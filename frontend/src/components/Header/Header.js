@@ -9,6 +9,9 @@ const Header = props => {
     if (type === "TOKEN") {
       props.logoutFetchToken();
     }
+    if (type === "SESSION") {
+      props.logoutFetchSession();
+    }
   };
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">

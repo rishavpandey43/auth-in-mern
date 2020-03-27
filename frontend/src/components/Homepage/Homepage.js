@@ -12,23 +12,25 @@ const HomePage = props => {
       props.basicAuthDetail.isAuthenticated ||
       props.sessionAuthDetail.isAuthenticated ||
       props.tokenAuthDetail.isAuthenticated;
+    let version = "v1";
+    if (props.basicAuthDetail.isAuthenticated) {
+      version = "v1";
+    }
+    if (props.tokenAuthDetail.isAuthenticated) {
+      version = "v2";
+    }
+    if (props.sessionAuthDetail.isAuthenticated) {
+      version = "v3";
+    }
     if (isAuthenticated) {
       if (props.userDetail) {
-        console.log("BASIC AUTH");
         props.history.push(`/profile/${props.userDetail.username}`);
       } else if (!props.userDetail) {
         axios
-          .get(
-            baseUrl + "api/v2/users/get-username",
-            {
-              params: {
-                token: localStorage.getItem("auth_practice_token")
-              }
-            },
-            {
-              headers: { "Content-Type": "application/json" }
-            }
-          )
+          .get(`${baseUrl}api/${version}/users/get-username`, {
+            withCredentials: true,
+            headers: { "Content-Type": "application/json" }
+          })
           .then(res => {
             props.history.push(`/profile/${res.data.user.username}`);
           })

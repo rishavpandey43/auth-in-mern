@@ -9,8 +9,8 @@ const whiteList = [
 const corsOptionDelegate = (req, callback) => {
   let corsOptions;
   if (whiteList.indexOf(req.header("Origin")) !== -1) {
-    corsOptions = { origin: true };
-  } else corsOptions = { origin: false };
+    corsOptions = { origin: true, credentials: true };
+  } else corsOptions = { origin: false, credentials: false };
   callback(null, corsOptions);
 };
 
