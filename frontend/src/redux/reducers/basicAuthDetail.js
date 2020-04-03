@@ -22,7 +22,7 @@ const basicAuthDetail = (state = initialState, action) => {
     case ActionTypes.LOGIN_REQUEST_BASIC:
       return {
         ...state,
-        isLoading: false,
+        isLoading: true,
         isAuthenticated: false,
         errMessage: null,
         userCredentials: action.userCredentials,

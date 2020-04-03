@@ -29,7 +29,7 @@ const Login = props => {
     },
     rememberUser: false,
     tokenStorageType: 1, // here 0 represents cookie and 1 represents local storage
-    sessionStorageType: 0 // here 0 represents cookie and 1 represents local storage
+    sessionStorageType: 1 // here 0 represents cookie and 1 represents local storage
   });
 
   const handleInputChange = e => {
@@ -56,7 +56,11 @@ const Login = props => {
         });
       }
       if (type === "SESSION") {
-        // props.loginFetchCookie({credentials, sessionStorageType: state.sessionStorageType});
+        console.log("Session");
+        props.loginFetchSession({
+          credentials,
+          sessionStorageType: state.sessionStorageType
+        });
       }
     }
   };
@@ -152,13 +156,13 @@ const Login = props => {
                         className="custom-control-input"
                         checked={state.tokenStorageType === 0 ? true : false}
                         onChange={() =>
-                          setState({ ...state, tokenStorageType: 0 })
+                          setState({ ...state, tokenStorageType: 1 })
                         }
                       />
                       <label
                         className="custom-control-label"
                         onClick={() =>
-                          setState({ ...state, tokenStorageType: 0 })
+                          setState({ ...state, tokenStorageType: 1 })
                         }
                       >
                         Using Cookie
@@ -209,13 +213,13 @@ const Login = props => {
                         className="custom-control-input"
                         checked={state.sessionStorageType === 0 ? true : false}
                         onChange={e =>
-                          setState({ ...state, sessionStorageType: 0 })
+                          setState({ ...state, sessionStorageType: 1 })
                         }
                       />
                       <label
                         className="custom-control-label"
                         onClick={() =>
-                          setState({ ...state, sessionStorageType: 0 })
+                          setState({ ...state, sessionStorageType: 1 })
                         }
                       >
                         Using Cookie
