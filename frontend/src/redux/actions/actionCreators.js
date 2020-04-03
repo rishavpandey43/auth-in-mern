@@ -2,6 +2,8 @@ import axios from "axios";
 
 import * as ActionTypes from "./actionTypes";
 
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
+
 /* These helper actions are used for every other actions */
 
 export const setUserDetail = response => {
@@ -18,8 +20,6 @@ export const removeUserDetail = response => {
 };
 
 /* Below Actions are only for basic authentication, where browser doesn't remember any data. You need to send username, password for every request */
-
-const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 export const loginRequestBasic = response => {
   return {

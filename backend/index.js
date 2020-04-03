@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const FileStore = require("session-file-store")(session);
@@ -40,6 +41,7 @@ connection.on("error", function(err) {
 app.use(cookieParser(process.env.COOKIE_SECRET_KEY));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(morgan("tiny"));
 
 // Below initializing of session is only required for session based authentication
 app.use(
@@ -48,7 +50,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     secret: process.env.SESSION_SECRET,
-    store: new FileStore()
+    store: new FileStore({ logFn: function() {} })
     // cookie: {
     //   maxAge: 24 * 60 * 60 * 1000,
     //   secure: true
